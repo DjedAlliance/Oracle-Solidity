@@ -1,30 +1,25 @@
-# Forge Template
+# Oracle
 
-A template for quickly getting started with forge
+A simple oracle with a minimal governance system. It allows multiple owners to post data and allows a majority of the current owners to add more owners or to remove owners.
 
-## Getting Started
+## Setting Up
+
+Install [Foundry](https://github.com/foundry-rs/foundry/blob/master/README.md). Then:
 
 ```
-mkdir my-project
-cd my-project
-forge init --template https://github.com/FrankieIsLost/forge-template
-git submodule update --init --recursive  ## initialize submodule dependencies
-npm install ## install development dependencies
+npm install
+```
+
+
+## Building and Testing
+
+```
 forge build
 forge test
+forge coverage
 ```
 
-## Features
-
-### Testing Utilities
-
-Includes a `Utilities.sol` contract with common testing methods (like creating users with an initial balance), as well as various other utility contracts.
-
-### Preinstalled dependencies
-
-`ds-test` for testing, `forge-std` for better cheatcode UX, and `solmate` for optimized contract implementations.  
-
-### Linting
+## Linting
 
 Pre-configured `solhint` and `prettier-plugin-solidity`. Can be run by
 
@@ -32,15 +27,3 @@ Pre-configured `solhint` and `prettier-plugin-solidity`. Can be run by
 npm run solhint
 npm run prettier
 ```
-
-### CI with Github Actions
-
-Automatically run linting and tests on pull requests.
-
-### Default Configuration
-
-Including `.gitignore`, `.vscode`, `remappings.txt`
-
-## Acknowledgement
-
-Inspired by great dapptools templates like https://github.com/gakonst/forge-template, https://github.com/gakonst/dapptools-template and https://github.com/transmissions11/dapptools-template
