@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -23,6 +23,6 @@ jobs:
 
       - name: Run lint check
         run: npm run lint:check
-
-      - name: Run tests
-        run: forge test
+      
+      - name: Run Forge tests
+        run: forge coverage 
