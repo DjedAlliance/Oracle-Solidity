@@ -14,7 +14,7 @@ contract SimpleOracle is MultiOwnable {
     mapping(address => bool) public acceptedTermsOfService;
 
     modifier onlyAcceptedTermsOfService() {
-        require(acceptedTermsOfService[msg.sender], "Term of service are not accepted");
+        require(acceptedTermsOfService[msg.sender], "Terms of Service not accepted");
         _;
     }
 
