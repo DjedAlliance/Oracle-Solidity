@@ -14,18 +14,11 @@ contract SimpleOracle is MultiOwnable {
     mapping(address => bool) public acceptedTermsOfService;
 
     modifier onlyAcceptedTermsOfService() {
-        require(
-            acceptedTermsOfService[msg.sender],
-            "Term of service are not accepted"
-        );
+        require(acceptedTermsOfService[msg.sender], "Term of service are not accepted");
         _;
     }
 
-    constructor(
-        address _owner,
-        string memory _description,
-        string memory _termsOfService
-    ) MultiOwnable(_owner) {
+    constructor(address _owner, string memory _description, string memory _termsOfService) MultiOwnable(_owner) {
         description = _description;
         termsOfService = _termsOfService;
     }
