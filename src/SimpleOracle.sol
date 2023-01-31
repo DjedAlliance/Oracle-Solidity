@@ -5,11 +5,10 @@ import {MultiOwnable} from "./MultiOwnable.sol";
 
 contract SimpleOracle is MultiOwnable {
     string public description; // short string describing this oracle's data (e.g. "ADA/USD")
-    string public termsOfService; //terms of services
+    string public termsOfService; // terms of service
     uint256 private data; // latest data provided by the oracle
 
     event DataWritten(uint256 data);
-    event DataRead(address consumer, uint256 data);
 
     mapping(address => bool) public acceptedTermsOfService;
 
