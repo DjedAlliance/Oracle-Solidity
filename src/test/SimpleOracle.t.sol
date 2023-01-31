@@ -61,7 +61,7 @@ contract SimpleOracleTest is BaseSetup {
         );
 
         vm.startPrank(owner);
-        vm.expectRevert(abi.encodePacked("Term of service are not accepted"));
+        vm.expectRevert(abi.encodePacked("Terms of Service not accepted"));
         simpleOracle.readData();
         vm.stopPrank();
     }

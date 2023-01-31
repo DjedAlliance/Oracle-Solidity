@@ -28,8 +28,7 @@ contract SimpleOracle is MultiOwnable {
         emit DataWritten(data);
     }
 
-    function readData() external onlyAcceptedTermsOfService returns (uint256) {
-        emit DataRead(msg.sender, data);
+    function readData() external view onlyAcceptedTermsOfService returns (uint256) {
         return data;
     }
 
