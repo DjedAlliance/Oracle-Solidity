@@ -108,16 +108,6 @@ contract SimpleOracleTest is BaseSetup {
         vm.stopPrank();
     }
 
-    function testSupportRevertIfAlreadyOwner() public {
-        console.log("Should fail when caller is not the owner");
-
-        vm.startPrank(owner);
-        vm.expectRevert(abi.encodePacked("address is already an owner"));
-
-        simpleOracle.support(owner);
-        vm.stopPrank();
-    }
-
     function testSupportRevertAlreadySupporting() public {
         console.log("Should fail to support when already supporting");
 
@@ -176,16 +166,6 @@ contract SimpleOracleTest is BaseSetup {
         vm.expectRevert(abi.encodePacked("Unauthorized"));
 
         simpleOracle.unsupport(secondNonOwner);
-        vm.stopPrank();
-    }
-
-    function testUnsupportRevertIfAlreadyOwner() public {
-        console.log("Should fail when caller is not the owner");
-
-        vm.startPrank(owner);
-        vm.expectRevert(abi.encodePacked("address is already an owner"));
-
-        simpleOracle.unsupport(owner);
         vm.stopPrank();
     }
 
@@ -323,17 +303,6 @@ contract SimpleOracleTest is BaseSetup {
         assertEq(opposingCounterAfter, oppossingCounterBefore + 1);
         assertEq(simpleOracle.opposing(owner, 0), nonOwner);
         assertTrue(simpleOracle.opposers(nonOwner, owner));
-    }
-
-    function testOpposeRevertNotOwner() public {
-        console.log("Should fail when user is not owner");
-
-        address nonOwner = users[1];
-        vm.startPrank(owner);
-
-        vm.expectRevert(abi.encodePacked("address is not an owner"));
-        simpleOracle.oppose(nonOwner);
-        vm.stopPrank();
     }
 
     function testOpposeRevertAlreadyOpposing() public {

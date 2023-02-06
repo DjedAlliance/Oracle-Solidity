@@ -61,7 +61,7 @@ contract MultiOwnable {
         emit OwnerRemoved(a);
     }
 
-    function support(address a) external onlyOwner isNotOwner(a) {
+    function support(address a) external onlyOwner {
         require(!supporters[a][msg.sender], "already supporting");
         supportCounter[a] += 1;
         supporters[a][msg.sender] = true;
@@ -69,7 +69,7 @@ contract MultiOwnable {
         emit SupportAdded(a, msg.sender);
     }
 
-    function oppose(address a) external onlyOwner isOwner(a) {
+    function oppose(address a) external onlyOwner {
         require(!opposers[a][msg.sender], "already opposing");
         oppositionCounter[a] += 1;
         opposers[a][msg.sender] = true;
@@ -81,7 +81,7 @@ contract MultiOwnable {
         _unsupport(a, msg.sender);
     }
 
-    function _unsupport(address a, address _owner) internal isNotOwner(a) {
+    function _unsupport(address a, address _owner) internal {
         if (supporters[a][_owner]) {
             supportCounter[a] -= 1;
             supporters[a][_owner] = false;
@@ -94,12 +94,11 @@ contract MultiOwnable {
         _unoppose(a, msg.sender);
     }
 
-    function _unoppose(address a, address _owner) internal isOwner(a) {
+    function _unoppose(address a, address _owner) internal {
         if (opposers[a][_owner]) {
             oppositionCounter[a] -= 1;
             opposers[a][_owner] = false;
             deleteElement(opposing[msg.sender], a);
-
             emit OppositionRemoved(a, _owner);
         }
     }
