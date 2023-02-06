@@ -7,10 +7,10 @@ contract MultiOwnable {
     mapping(address => bool) public owner;
     mapping(address => uint256) public supportCounter;
     mapping(address => uint256) public oppositionCounter;
-    mapping(address => mapping(address => bool)) public supporters; // candidate => addresses of owners who support the candidate
-    mapping(address => mapping(address => bool)) public opposers; // owner => address of owners who oppose the owner
-    mapping(address => address[]) public supporting; // owner => addresses of candidates that the owner is supporting
-    mapping(address => address[]) public opposing; // owner => addresses of owners that the owner is opposing
+    mapping(address => mapping(address => bool)) public supporters; // address => addresses of owners who support the address being an owner
+    mapping(address => mapping(address => bool)) public opposers; // address => addresses of owners who oppose the address being an owner
+    mapping(address => address[]) public supporting; // owner => addresses that the owner is supporting
+    mapping(address => address[]) public opposing; // owner => addresses that the owner is opposing
 
     event OwnerAdded(address a);
     event OwnerRemoved(address a);
@@ -66,6 +66,7 @@ contract MultiOwnable {
         supportCounter[a] += 1;
         supporters[a][msg.sender] = true;
         supporting[msg.sender].push(a);
+        _unoppose(a, msg.sender); // When owner starts supporting `a`, it will automatically stop opposing `a`
         emit SupportAdded(a, msg.sender);
     }
 
@@ -74,6 +75,7 @@ contract MultiOwnable {
         oppositionCounter[a] += 1;
         opposers[a][msg.sender] = true;
         opposing[msg.sender].push(a);
+        _unsupport(a, msg.sender); // When owner starts opposing `a`, it will automatically stop supporting `a`
         emit OppositionAdded(a, msg.sender);
     }
 
