@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.16;
-import {console} from "./test/utils/Console.sol";
 
 contract MultiOwnable {
     uint256 public numOwners;
