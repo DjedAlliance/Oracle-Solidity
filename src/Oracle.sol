@@ -73,18 +73,18 @@ contract Oracle is MultiOwnable {
     
     // # Functions to Write and Read Data.
 
-    function writeData(uint _data, uint cost) external onlyOwner {
-        timeStamp += 1;
+    function writeData(uint _data, uint cost) external onlyOwner 
+    {
         writes += 1;
         data = _data;
-        latestWrite = timeStamp;
         totalCost += cost;
         latestCost = cost;
+        timeStamp += 1;
+        latestWrite = timeStamp;
         emit DataWritten(data, cost);
     }
 
     function readData() external returns (uint) {
-        timeStamp += 1;
         uint w = weightOf(msg.sender);
         uint f = feeOf(msg.sender, w);
         require(credit[msg.sender] >= f, "Insufficient credit");
@@ -92,6 +92,7 @@ contract Oracle is MultiOwnable {
         totalCredit -= f;
         reads += w;
         totalRevenue += f;
+        timeStamp += 1;
         latestRead[msg.sender] = timeStamp; // update the consumer's latest read timestamp
         emit DataRead(msg.sender, w, data);
         return data;
@@ -104,7 +105,8 @@ contract Oracle is MultiOwnable {
     function creditOf(address consumer) external view returns (uint) { return credit[consumer]; }
     function weightOf(address consumer) public view returns (uint) { return (weight [consumer] == 0) ? 1 : (weight[consumer]); } 
     function feeOf(address consumer) public view returns (uint) { return feeOf(consumer, weightOf(consumer)); }
-    function feeOf(address consumer, uint _weight) internal view returns (uint) { return latestRead[consumer] > latestWrite ? 0 : (_weight * baseFee); }
+    function feeOf(address consumer, uint _weight) internal view returns (uint) 
+    { return latestRead[consumer] > latestWrite ? 0 : (_weight * baseFee); }
 
     function stateVariables(address consumer) external view returns (uint, uint) {
         return (baseFee * weightOf(consumer), credit [consumer]);
