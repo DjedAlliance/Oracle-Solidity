@@ -153,10 +153,14 @@ contract Oracle is MultiOwnable {
     }
 
     // # Functions for consumers to deposit, withdraw and view their credits
-
+    // Should I adjust the consumer weight (if consumer depositing for the first time)
     function depositCredit(address consumer) external payable { 
         credit[consumer] += msg.value; 
         totalCredit += msg.value;
+        if (weight [consumer] == 0)
+        {
+            weight [consumer] = 1;
+        }
         emit CreditDeposited(consumer, msg.value);
     }
 
