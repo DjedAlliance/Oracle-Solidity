@@ -12,7 +12,7 @@ contract Oracle is MultiOwnable {
 
     // # State Variables
     uint private data;             // latest data provided by the oracle
-    uint private timeStamp = 0;    // timestamp to be used for keeping track of events
+    uint private time = 0;    // timestamp to be used for keeping track of events
     uint private totalCost = 0;    // sum of costs informed by owners for writing data (resettable to avoid overflow)
     uint private totalRevenue = 0; // sum of fees paid by consumers for reading data (resettable to avoid overflow)
     uint private writes = 0; // number of writes since last base fee adjustment
@@ -79,8 +79,8 @@ contract Oracle is MultiOwnable {
         data = _data;
         totalCost += cost;
         latestCost = cost;
-        timeStamp += 1;
-        latestWrite = timeStamp;
+        time += 1;
+        latestWrite = time;
         emit DataWritten(data, cost);
     }
 
@@ -92,8 +92,8 @@ contract Oracle is MultiOwnable {
         totalCredit -= f;
         reads += w;
         totalRevenue += f;
-        timeStamp += 1;
-        latestRead[msg.sender] = timeStamp; // update the consumer's latest read timestamp
+        time += 1;
+        latestRead[msg.sender] = time; // update the consumer's latest read timestamp
         emit DataRead(msg.sender, w, data);
         return data;
     }
