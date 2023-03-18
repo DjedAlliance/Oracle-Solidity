@@ -5,29 +5,29 @@ import "./MultiOwnable.sol";
 
 contract Oracle is MultiOwnable {
     // # Parameters
-    string public description; // short string describing this oracle's data (e.g. "ADA/USD")
+    string public description;             // short string describing this oracle's data (e.g. "ADA/USD")
     uint public constant scaling = 1e18;   // 18 decimals
     uint public immutable lockingPeriod;   // locking period (in seconds) for changes by the owners that may negatively affect consumers
     
 
     // # State Variables
     uint private data;             // latest data provided by the oracle
-    uint private time = 0;    // timestamp to be used for keeping track of events
+    uint private time = 0;         // timestamp to be used for keeping track of events
     uint private totalCost = 0;    // sum of costs informed by owners for writing data (resettable to avoid overflow)
     uint private totalRevenue = 0; // sum of fees paid by consumers for reading data (resettable to avoid overflow)
-    uint private writes = 0; // number of writes since last base fee adjustment
-    uint private reads = 0;  // number of weighted reads since last base fee adjustment
-    uint public baseFee;        // fee to read the data once, only paid if the data is new
-    uint public maxFee;         // maximum fee to read the data once
-    uint public maxFeeNext;     // next maximum fee, which replaced `maxFee` after `maxFeeTimelock`
-    uint public maxFeeTimelock; // timestamp of the earliest time for the next max fee adjustment
-    uint public latestCost;  // latest cost of writing data
-    uint public latestWrite; // timestamp of the latest write
-    uint public totalCredit = 0; // sum of credits of all consumers
-    mapping(address => uint) private credit; // credit of a consumer, used to pay for data reads
-    mapping(address => uint) private latestRead; // timestamps of the latest reads of consumers
-    mapping(address => uint) private weight; // weight imposed by owners on consumers that are reselling the data, to prevent free-riding
-    mapping(address => uint) private weightNext; // next weight, which replaces the current weight after the timelock
+    uint private writes = 0;       // number of writes since last base fee adjustment
+    uint private reads = 0;        // number of weighted reads since last base fee adjustment
+    uint public baseFee;           // fee to read the data once, only paid if the data is new
+    uint public maxFee;            // maximum fee to read the data once
+    uint public maxFeeNext;        // next maximum fee, which replaced `maxFee` after `maxFeeTimelock`
+    uint public maxFeeTimelock;    // timestamp of the earliest time for the next max fee adjustment
+    uint public latestCost;        // latest cost of writing data
+    uint public latestWrite;       // timestamp of the latest write
+    uint public totalCredit = 0;   // sum of credits of all consumers
+    mapping(address => uint) private credit;         // credit of a consumer, used to pay for data reads
+    mapping(address => uint) private latestRead;     // timestamps of the latest reads of consumers
+    mapping(address => uint) private weight;         // weight imposed by owners on consumers that are reselling the data, to prevent free-riding
+    mapping(address => uint) private weightNext;     // next weight, which replaces the current weight after the timelock
     mapping(address => uint) private weightTimelock; // timestamp of the earliest time for the next weight adjustment
     
     event DataWritten(uint data, uint cost);
