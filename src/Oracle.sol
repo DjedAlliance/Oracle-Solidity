@@ -90,7 +90,7 @@ contract Oracle is MultiOwnable {
         require(credit[msg.sender] >= f, "Insufficient credit");
         credit[msg.sender] -= f; // Consumer pays to read data
         totalCredit -= f;
-        reads += w;
+        reads = reads + (f > 0 ? w : 0);
         totalRevenue += f;
         time += 1;
         latestRead[msg.sender] = time; // update the consumer's latest read timestamp
