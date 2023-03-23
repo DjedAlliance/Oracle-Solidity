@@ -32,11 +32,16 @@ npm run prettier
 
 ### Known Deployments of this Oracle
 
+This oracle has been deployed to the following blockchains:
+
 * Milkomeda-C1 Testnet:
     * Oracle Address: 0x47a7d67e89E5714456b9af39703C1dc62203002A
+    * Data provided: latest price of 1 USD in ADA multiplied by 10^18
+        * For example: the result `2875000000000000000` means that 1 USD costs 2.875 ADA.
 
 * Milkomeda-C1:
     * Oracle Address: 0xc531410f61FA22e19048D406EDE3361b3de5c386
+    * Data provided: latest price of 1 USD in ADA multiplied by 10^18
 
 ### How to read data from this Oracle from a Smart Contract
 
@@ -44,43 +49,48 @@ The following sample contract shows how to read data from the oracle.
 Note that it is necessary to accept the terms of service first.
 
 ```
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IOracle.sol";
+interface IOracle {
+    function readData() external view returns (uint256);
+    function acceptTermsOfService() external;
+}
 
-contract SampleContract {
-    IOracle public oracle;
-
-    event DataRead(string message, uint256 data);
+contract SampleOracleDataConsumer {
+    IOracle public oracle = IOracle(0xc531410f61FA22e19048D406EDE3361b3de5c386);
+    // using the address of the oracle in Milkomeda-C1 as an example.
  
-    constructor(address oracleAddress) {
-        oracle = IOracle(oracleAddress);
+    constructor() {
         oracle.acceptTermsOfService();
     }
 
-    function doSomething() {
-        uint256 data = oracle.readData();
-        emit DataRead("The value read from the oracle was:", data);
+    function sampleFunctionUsingTheOracle() {
+        data = oracle.readData();
+        // then do something with the data...
     }
 }
 ```
 
 ### How to read data from this Oracle from a Web App
 
-To read data from the the oracle using web3.js, the following can de done:
+To read data from the oracle using web3.js, do the following:
 
 ```
-import oracleArtifact from "../artifacts/Oracle.json";
+import oracleArtifact from "../artifacts/SimpleOracle.json";
 
-const oracle = new web3.eth.Contract(oracleArtifact.abi, oracleAddress, {
-    from: authorizedAddress
-});
-```
+const oracleAddress = "0xc531410f61FA22e19048D406EDE3361b3de5c386"; 
+// using the address of the oracle in Milkomeda-C1 as an example.
 
-The address `authorizedAddress` can be any address that has already called the oracle's `acceptTermsOfService` function. Because the oracle's `readData` function is a view function, this address does not need to belong to you. You do not need to possess the private key of this address.
+const oracle = new web3.eth.Contract(
+    oracleArtifact.abi, 
+    oracleAddress, 
+    {from: authorizedAddress}
+);
 
-Then the data can be read by calling:
-
-```
 const data = await web3Promise(oracle, "readData");
 ```
+
+Ensure that [SimpleOracle.json](./abi/SimpleOracle.json) is in your web app's `../artifacts/` folder.
+
+The address `authorizedAddress` can be any address that has already called the oracle's `acceptTermsOfService` function. Because the oracle's `readData` function is a view function, this address does not need to belong to you. You do not need to possess the private key of this address.
