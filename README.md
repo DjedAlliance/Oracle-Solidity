@@ -42,6 +42,7 @@ This oracle has been deployed to the following blockchains:
 * Milkomeda-C1:
     * Oracle Address: 0xc531410f61FA22e19048D406EDE3361b3de5c386
     * Data provided: latest price of 1 USD in ADA multiplied by 10^18
+    * Usage of this oracle is subject to these [terms of service](https://ext-oracle-disclaimer.milkomeda.com/disclaimer.pdf).
 
 ### How to read data from this Oracle from a Smart Contract
 
