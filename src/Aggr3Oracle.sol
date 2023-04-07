@@ -7,10 +7,7 @@ contract Aggr3Oracle is MultiOwnable {
     string public description; // short string describing this oracle's data (e.g. "ADA/USD")
     string public termsOfService; // terms of service
 
-    struct Data {
-        uint256 value;
-        address owner;
-    }
+    struct Data { uint256 value; address owner; }
     mapping(uint256 => Data) private data; // data provided by the oracle per nonce
     uint256 private nonce = 0; // nonce for accessing the Data structure
     uint256 private medianValue; // median value calculated from unique owner data
@@ -20,18 +17,11 @@ contract Aggr3Oracle is MultiOwnable {
     mapping(address => bool) public acceptedTermsOfService;
 
     modifier onlyAcceptedTermsOfService() {
-        require(
-            acceptedTermsOfService[msg.sender],
-            "Terms of Service not accepted"
-        );
+        require(acceptedTermsOfService[msg.sender], "Terms of Service not accepted");
         _;
     }
 
-    constructor(
-        address _owner,
-        string memory _description,
-        string memory _termsOfService
-    ) MultiOwnable(_owner) {
+    constructor(address _owner, string memory _description, string memory _termsOfService) MultiOwnable(_owner) {
         description = _description;
         termsOfService = _termsOfService;
     }
@@ -64,21 +54,12 @@ contract Aggr3Oracle is MultiOwnable {
             }
         }
 
-        if (index == 1) {
-            medianValue = values[0];
-        } else if (index == 2) {
-            medianValue = (values[0] + values[1]) / 2;
-        } else {
-            medianValue = median(values[0], values[1], values[2]);
-        }
+        if (index == 1) medianValue = values[0]; 
+        else if (index == 2) medianValue = (values[0] + values[1]) / 2;
+        else medianValue = median(values[0], values[1], values[2]);
     }
 
-    function readData()
-        external
-        view
-        onlyAcceptedTermsOfService
-        returns (uint256)
-    {
+    function readData() external view onlyAcceptedTermsOfService returns (uint256) {
         return medianValue;
     }
 
@@ -86,17 +67,9 @@ contract Aggr3Oracle is MultiOwnable {
         acceptedTermsOfService[msg.sender] = true;
     }
 
-    function median(
-        uint256 a,
-        uint256 b,
-        uint256 c
-    ) internal pure returns (uint256) {
-        if (a > b) {
-            (a, b) = (b, a);
-        }
-        if (a > c) {
-            (a, c) = (c, a);
-        }
+    function median(uint256 a, uint256 b, uint256 c) internal pure returns (uint256) {
+        if (a > b) (a, b) = (b, a);
+        if (a > c) (a, c) = (c, a);
         return b < c ? b : c;
     }
 }
