@@ -12,7 +12,7 @@ contract Aggr3Oracle is MultiOwnable {
         address owner;
     }
     mapping(uint256 => Data) private data; // data provided by the oracle per nonce
-    uint256 private nonce; // nonce for accessing the Data structure
+    uint256 private nonce = 0; // nonce for accessing the Data structure
     uint256 private medianValue; // median value calculated from unique owner data
 
     event DataWritten(uint256 data, address indexed owner);
@@ -34,7 +34,6 @@ contract Aggr3Oracle is MultiOwnable {
     ) MultiOwnable(_owner) {
         description = _description;
         termsOfService = _termsOfService;
-        nonce = 0;
     }
 
     function writeData(uint256 _data) external onlyOwner {
