@@ -40,8 +40,10 @@ contract Aggr3Oracle is MultiOwnable {
         data[nonce] = Data(_data, msg.sender);
         emit DataWritten(data[nonce].value, msg.sender);
         nonce++;
+        updateMedian();
+    }
 
-        // Calculate the median value
+    function updateMedian() internal {
         uint256[] memory values = new uint256[](3);
         address[] memory uniqueOwners = new address[](3);
         uint256 index = 0;
