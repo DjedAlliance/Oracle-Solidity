@@ -10,7 +10,7 @@ contract Aggr3Oracle is MultiOwnable {
     struct Data { uint256 value; address owner; }
     mapping(uint256 => Data) private data; // data provided by the oracle per nonce
     uint256 private nonce = 0; // nonce for accessing the Data structure
-    uint256 private medianValue; // median value calculated from unique owner data
+    uint256 private median; // median value calculated from unique owner data
 
     event DataWritten(uint256 data, address indexed owner);
 
@@ -54,20 +54,20 @@ contract Aggr3Oracle is MultiOwnable {
             }
         }
 
-        if (index == 1) medianValue = values[0]; 
-        else if (index == 2) medianValue = (values[0] + values[1]) / 2;
-        else medianValue = median(values[0], values[1], values[2]);
+        if (index == 1) median = values[0]; 
+        else if (index == 2) median = (values[0] + values[1]) / 2;
+        else median = median3(values[0], values[1], values[2]);
     }
 
     function readData() external view onlyAcceptedTermsOfService returns (uint256) {
-        return medianValue;
+        return median;
     }
 
     function acceptTermsOfService() external {
         acceptedTermsOfService[msg.sender] = true;
     }
 
-    function median(uint256 a, uint256 b, uint256 c) internal pure returns (uint256) {
+    function median3(uint256 a, uint256 b, uint256 c) internal pure returns (uint256) {
         if (a > b) (a, b) = (b, a);
         if (a > c) (a, c) = (c, a);
         return b < c ? b : c;
