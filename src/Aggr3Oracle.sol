@@ -68,8 +68,15 @@ contract Aggr3Oracle is MultiOwnable {
     }
 
     function median3(uint256 a, uint256 b, uint256 c) internal pure returns (uint256) {
-        if (a > b) (a, b) = (b, a);
-        if (a > c) (a, c) = (c, a);
-        return b < c ? b : c;
+        if (a > b) {
+            if (c >= a) return a;
+            else if (b >= c) return b;
+            else return c;
+        }
+        else { // b >= a
+            if (c >= b) return b;
+            else if (a >= c) return a;
+            else return c;
+        }
     }
 }
