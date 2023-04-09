@@ -39,7 +39,7 @@ contract Aggr3Oracle is MultiOwnable {
 
         uint256 index = 0;
         uint256 i = nonce - 1;
-        while (index < 3) {
+        while (index < 3) { // equivalent to `for (int256 i = int256(nonce) - 1; i >= 0 && index < 3; i--) {`, but avoiding type casting
             bool isOwnerUnique = true;
             for (uint256 j = 0; j < index; j++) {
                 if (uniqueOwners[j] == data[i].owner) {
