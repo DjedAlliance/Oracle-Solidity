@@ -36,24 +36,28 @@ contract Aggr3Oracle is MultiOwnable {
     function updateMedian() internal {
         uint256[] memory values = new uint256[](3);
         address[] memory uniqueOwners = new address[](3);
-        uint256 index = 0;
 
-        for (int256 i = int256(nonce) - 1; i >= 0 && index < 3; i--) {
+        uint256 index = 0;
+        uint256 i = nonce - 1;
+        while (index < 3) {
             bool isOwnerUnique = true;
             for (uint256 j = 0; j < index; j++) {
-                if (uniqueOwners[j] == data[uint256(i)].owner) {
+                if (uniqueOwners[j] == data[i].owner) {
                     isOwnerUnique = false;
                     break;
                 }
             }
 
             if (isOwnerUnique) {
-                values[index] = data[uint256(i)].value;
-                uniqueOwners[index] = data[uint256(i)].owner;
+                values[index] = data[i].value;
+                uniqueOwners[index] = data[i].owner;
                 index++;
             }
+
+            if (i == 0) break; else i--;
         }
 
+        // `index == 0` never occurs.
         if (index == 1) median = values[0]; 
         else if (index == 2) median = (values[0] + values[1]) / 2;
         else median = median3(values[0], values[1], values[2]);
