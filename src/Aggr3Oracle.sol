@@ -36,27 +36,28 @@ contract Aggr3Oracle is MultiOwnable {
     function updateMedian() internal {
         uint256[] memory values = new uint256[](3);
         address[] memory uniqueOwners = new address[](3);
-        uint256 index = 0;
 
-        for (int256 i = int256(nonce) - 1; i >= 0 && index < 3; i--) {
+        uint256 index = 0;
+        uint256 i = nonce - 1;
+        while (index < 3) { // equivalent to `for (int256 i = int256(nonce) - 1; i >= 0 && index < 3; i--) {`, but avoiding type casting
             bool isOwnerUnique = true;
             for (uint256 j = 0; j < index; j++) {
-                if (uniqueOwners[j] == data[uint256(i)].owner) {
+                if (uniqueOwners[j] == data[i].owner) {
                     isOwnerUnique = false;
                     break;
                 }
             }
-
             if (isOwnerUnique) {
-                values[index] = data[uint256(i)].value;
-                uniqueOwners[index] = data[uint256(i)].owner;
+                values[index] = data[i].value;
+                uniqueOwners[index] = data[i].owner;
                 index++;
             }
+            if (i == 0) break; else i--;
         }
 
-        if (index == 1) median = values[0]; 
+        if (index == 3) median = median3(values[0], values[1], values[2]); 
         else if (index == 2) median = (values[0] + values[1]) / 2;
-        else median = median3(values[0], values[1], values[2]);
+        else median = values[0]; // (index == 1), since `index == 0` never occurs. 
     }
 
     function readData() external view onlyAcceptedTermsOfService returns (uint256) {
@@ -68,8 +69,15 @@ contract Aggr3Oracle is MultiOwnable {
     }
 
     function median3(uint256 a, uint256 b, uint256 c) internal pure returns (uint256) {
-        if (a > b) (a, b) = (b, a);
-        if (a > c) (a, c) = (c, a);
-        return b < c ? b : c;
+        if (a > b) {
+            if (c >= a) return a;
+            else if (b >= c) return b;
+            else return c;
+        }
+        else { // b >= a
+            if (c >= b) return b;
+            else if (a >= c) return a;
+            else return c;
+        }
     }
 }
