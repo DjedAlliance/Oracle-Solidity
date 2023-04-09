@@ -47,20 +47,17 @@ contract Aggr3Oracle is MultiOwnable {
                     break;
                 }
             }
-
             if (isOwnerUnique) {
                 values[index] = data[i].value;
                 uniqueOwners[index] = data[i].owner;
                 index++;
             }
-
             if (i == 0) break; else i--;
         }
 
-        // `index == 0` never occurs.
-        if (index == 1) median = values[0]; 
+        if (index == 3) median = median3(values[0], values[1], values[2]); 
         else if (index == 2) median = (values[0] + values[1]) / 2;
-        else median = median3(values[0], values[1], values[2]);
+        else median = values[0]; // (index == 1), since `index == 0` never occurs. 
     }
 
     function readData() external view onlyAcceptedTermsOfService returns (uint256) {
