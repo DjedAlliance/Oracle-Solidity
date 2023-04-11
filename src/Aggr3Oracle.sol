@@ -36,21 +36,22 @@ contract Aggr3Oracle is MultiOwnable {
         address[] memory owners = new address[](3); // Will contain the owners who wrote the data points in `values`.
 
         uint256 index = 0; // an index for `values` and `owners`
-        uint256 i = data.length - 1; // traversal `data` starts from the end, to get the latest data points
+        uint256 i = data.length - 1; // traversal of `data` starts from the end, to get the latest data points
         while (index < 3) { // will find at most 3 data points to populate `values` and `owners`
             bool isOwnerDistinct = true;
-            for (uint256 j = 0; j < index; j++) { // checks whether the owner of the i-th data point is distinct from all owners in `owners`
+            for (uint256 j = 0; j < index;) { // checks whether the owner of the i-th data point is distinct from all owners in `owners`
                 if (owners[j] == data[i].owner) {
                     isOwnerDistinct = false;
                     break;
                 }
+                unchecked { ++j; }
             }
             if (isOwnerDistinct) { // if it is, then populate `values` and `owners` accordingly
                 values[index] = data[i].value;
                 owners[index] = data[i].owner;
-                index++;
+                unchecked { ++index; }
             }
-            if (i == 0) break; else i--; // continue traversing `data`
+            if (i == 0) break; else { unchecked { --i; } } // continue traversing `data`
         }
 
         if (index == 3) median = median3(values[0], values[1], values[2]); 
