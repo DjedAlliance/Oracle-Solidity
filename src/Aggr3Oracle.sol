@@ -4,13 +4,12 @@ pragma solidity ^0.8.16;
 import {MultiOwnable} from "./MultiOwnable.sol";
 
 contract Aggr3Oracle is MultiOwnable {
-    string public description; // short string describing this oracle's data (e.g. "ADA/USD")
+    string public description; // short string describing this oracle's data (e.g. "USD/ADA")
     string public termsOfService; // terms of service
 
     struct Data { uint256 value; address owner; }
-    mapping(uint256 => Data) private data; // data provided by the oracle per nonce
-    uint256 private nonce = 0; // nonce for accessing the Data structure
-    uint256 private median; // median value calculated from unique owner data
+    Data[] private data; // data provided by the owners
+    uint256 private median; // median of the last 3 data points from distinct owners
 
     event DataWritten(uint256 data, address indexed owner);
 
@@ -27,9 +26,8 @@ contract Aggr3Oracle is MultiOwnable {
     }
 
     function writeData(uint256 _data) external onlyOwner {
-        data[nonce] = Data(_data, msg.sender);
-        emit DataWritten(data[nonce].value, msg.sender);
-        nonce++;
+        data.push(Data(_data, msg.sender));
+        emit DataWritten(_data, msg.sender);
         updateMedian();
     }
 
@@ -41,8 +39,8 @@ contract Aggr3Oracle is MultiOwnable {
         address[] memory owners = new address[](3); // Will contain the owners who wrote the data points in `values`.
 
         uint256 index = 0;
-        uint256 i = nonce - 1;
-        while (index < 3) { // equivalent to `for (int256 i = int256(nonce) - 1; i >= 0 && index < 3; i--) {`, but avoiding type casting
+        uint256 i = data.length - 1;
+        while (index < 3) { // equivalent to `for (int256 i = int256(data.length) - 1; i >= 0 && index < 3; i--) {`, but avoiding type casting
             bool isOwnerUnique = true;
             for (uint256 j = 0; j < index; j++) {
                 if (owners[j] == data[i].owner) {
