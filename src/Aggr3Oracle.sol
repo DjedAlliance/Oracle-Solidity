@@ -36,23 +36,23 @@ contract Aggr3Oracle is MultiOwnable {
     function updateMedian() internal {
         // Traverse `data` starting from the end and, 
         // for each data point, add its value to `values` and its owner to `uniqueOwners`,
-        // if its owner is not yet in `uniqueOwners`. Stop the traversal after 3 such data points have been found.
+        // if its owner is not yet in `owners`. Stop the traversal after 3 such data points have been found.
         uint256[] memory values = new uint256[](3); // Will contain up to 3 latest data points by 3 mutually distinct owners.
-        address[] memory uniqueOwners = new address[](3); // Will contain the owners who wrote the data points in `values`.
+        address[] memory owners = new address[](3); // Will contain the owners who wrote the data points in `values`.
 
         uint256 index = 0;
         uint256 i = nonce - 1;
         while (index < 3) { // equivalent to `for (int256 i = int256(nonce) - 1; i >= 0 && index < 3; i--) {`, but avoiding type casting
             bool isOwnerUnique = true;
             for (uint256 j = 0; j < index; j++) {
-                if (uniqueOwners[j] == data[i].owner) {
+                if (owners[j] == data[i].owner) {
                     isOwnerUnique = false;
                     break;
                 }
             }
             if (isOwnerUnique) {
                 values[index] = data[i].value;
-                uniqueOwners[index] = data[i].owner;
+                owners[index] = data[i].owner;
                 index++;
             }
             if (i == 0) break; else i--;
