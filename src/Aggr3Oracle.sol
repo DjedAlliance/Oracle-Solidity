@@ -32,28 +32,25 @@ contract Aggr3Oracle is MultiOwnable {
     }
 
     function updateMedian() internal {
-        // Traverse `data` starting from the end and, 
-        // for each data point, add its value to `values` and its owner to `uniqueOwners`,
-        // if its owner is not yet in `owners`. Stop the traversal after 3 such data points have been found.
         uint256[] memory values = new uint256[](3); // Will contain up to 3 latest data points by 3 mutually distinct owners.
         address[] memory owners = new address[](3); // Will contain the owners who wrote the data points in `values`.
 
-        uint256 index = 0;
-        uint256 i = data.length - 1;
-        while (index < 3) { // equivalent to `for (int256 i = int256(data.length) - 1; i >= 0 && index < 3; i--) {`, but avoiding type casting
-            bool isOwnerUnique = true;
-            for (uint256 j = 0; j < index; j++) {
+        uint256 index = 0; // an index for `values` and `owners`
+        uint256 i = data.length - 1; // traversal `data` starts from the end, to get the latest data points
+        while (index < 3) { // will find at most 3 data points to populate `values` and `owners`
+            bool isOwnerDistinct = true;
+            for (uint256 j = 0; j < index; j++) { // checks whether the owner of the i-th data point is distinct from all owners in `owners`
                 if (owners[j] == data[i].owner) {
-                    isOwnerUnique = false;
+                    isOwnerDistinct = false;
                     break;
                 }
             }
-            if (isOwnerUnique) {
+            if (isOwnerDistinct) { // if it is, then populate `values` and `owners` accordingly
                 values[index] = data[i].value;
                 owners[index] = data[i].owner;
                 index++;
             }
-            if (i == 0) break; else i--;
+            if (i == 0) break; else i--; // continue traversing `data`
         }
 
         if (index == 3) median = median3(values[0], values[1], values[2]); 
