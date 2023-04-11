@@ -28,10 +28,8 @@ contract Aggr3Oracle is MultiOwnable {
     function writeData(uint256 _data) external onlyOwner {
         data.push(Data(_data, msg.sender));
         emit DataWritten(_data, msg.sender);
-        updateMedian();
-    }
 
-    function updateMedian() internal {
+        // # Begin Median Update
         uint256[] memory values = new uint256[](3); // Will contain up to 3 latest data points by 3 mutually distinct owners.
         address[] memory owners = new address[](3); // Will contain the owners who wrote the data points in `values`.
 
@@ -57,6 +55,7 @@ contract Aggr3Oracle is MultiOwnable {
         if (index == 3) median = median3(values[0], values[1], values[2]); 
         else if (index == 2) median = (values[0] + values[1]) / 2;
         else median = values[0]; // (index == 1), since `index == 0` never occurs. 
+        // # End Median Update
     }
 
     function readData() external view onlyAcceptedTermsOfService returns (uint256) {
