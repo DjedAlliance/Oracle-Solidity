@@ -14,4 +14,6 @@ interface IOracle {
         );
 
     function depositCredit(address consumer) external payable;
+
+    function acceptTermsOfService() external;
 }
