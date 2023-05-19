@@ -40,7 +40,7 @@ This oracle has been deployed to the following blockchains:
         * For example: the result `2875000000000000000` means that 1 USD costs 2.875 ADA.
 
 * Milkomeda-C1:
-    * Oracle Address: 0xc531410f61FA22e19048D406EDE3361b3de5c386
+    * Oracle Address: `0x49484Ae8646C12A8A68DfE2c978E9d4Fa5b01D16`
     * Data provided: latest price of 1 USD in ADA multiplied by 10^18
     * Usage of this oracle is subject to these [terms of service](https://ext-oracle-disclaimer.milkomeda.com/disclaimer.pdf).
 
